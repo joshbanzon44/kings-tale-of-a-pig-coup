@@ -5,14 +5,15 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
+  - Border
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - 
+  - Border
   - 
   - 
   - 
@@ -47,6 +48,9 @@ TagManager:
     locked: 0
   - name: Foreground
     uniqueID: 1568972021
+    locked: 0
+  - name: Enemy
+    uniqueID: 3073546435
     locked: 0
   - name: Player
     uniqueID: 1889131339
