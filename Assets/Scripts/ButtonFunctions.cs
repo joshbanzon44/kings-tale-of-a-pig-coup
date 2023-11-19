@@ -16,29 +16,35 @@ Application.Quit();
     }
 
     //Function to start new game, erase player data
-    public void New(string sceneName)
+    public void New()
     {
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
-        SceneManager.LoadScene(sceneName);
+        SceneManager.LoadScene("Level1");
     }
 
     //Function to continue game
     public void Continue()
     {
-
+        string currentLevel = PlayerPrefs.GetString("Level", "Level1");
+        SceneManager.LoadScene(currentLevel);
     }
 
     //Function to change scene to the instructions
-    public void How2Play(string sceneName)
+    public void How2Play()
     {
-        SceneManager.LoadScene(sceneName);
+        SceneManager.LoadScene("HowToPlay");
     }
 
     //Function to change scene to the credits for the game
-    public void Credits(string sceneName)
+    public void Credits()
     {
-        SceneManager.LoadScene(sceneName);
+        SceneManager.LoadScene("Credits");
     }
 
+    //Function to return to menu
+    public void Menu()
+    {
+        SceneManager.LoadScene("Menu");
+    }
 }

@@ -135,13 +135,16 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
         //Switch statement depending on tag of object touched
         switch (collision.gameObject.tag)
         {
             case "Powerup":
                 Debug.Log("Powerup collision");
             
+                break;
+            case "Enemy":
+                Debug.Log("Enemy collision");
+
                 break;
             default:
                 break;
