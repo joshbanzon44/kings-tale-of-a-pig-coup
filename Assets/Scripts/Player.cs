@@ -65,7 +65,7 @@ public class Player : MonoBehaviour
         //Get components
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = rb.GetComponent<SpriteRenderer>();
-        animator = rb.GetComponent<Animator>();
+        animator = transform.GetComponentInChildren<Animator>();
         audioSource = GetComponent<AudioSource>();
 
         Diamond = PlayerPrefs.GetInt("Diamond", 0);
@@ -118,7 +118,7 @@ public class Player : MonoBehaviour
             //Check if our feet on ground
             canJump = false;
             Invoke("allowJump", 0.5f);
-            Vector3 feetPosition = transform.GetChild(0).position;
+            Vector3 feetPosition = transform.GetChild(0).transform.GetChild(0).position;
             Collider2D[] colliders = Physics2D.OverlapCircleAll(feetPosition, 0.02f);
             for (int i = 0; i < colliders.Length; i++)
             {
@@ -148,7 +148,7 @@ public class Player : MonoBehaviour
         
         if (firing)
         {
-            Vector3 swingPosition = transform.GetChild(1).position;
+            Vector3 swingPosition = transform.GetChild(0).transform.GetChild(1).position;
             Collider2D[] colliders = Physics2D.OverlapCircleAll(swingPosition, 0.4f);
             for (int i = 0; i < colliders.Length; i++)
             {
@@ -208,7 +208,7 @@ public class Player : MonoBehaviour
         switch (collision.gameObject.tag)
         {
             case "Enemy":
-                if(Heart == 0 || cantMove)
+                if (Heart == 0 || cantMove)
                 {
                     return;
                 }
@@ -257,19 +257,6 @@ public class Player : MonoBehaviour
                 AudioSource collisionAudio = collision.gameObject.GetComponent<AudioSource>();
                 collisionAudio.Play();
                 break;
-
-            case "Enemy":
-                if (firing)
-                {
-                    Invoke("Delete", 2);
-                    Animator an2 = collision.gameObject.GetComponent<Animator>();
-                    an2.SetTrigger("Hit");
-                    CircleCollider2D cc2 = collision.gameObject.GetComponent<CircleCollider2D>();
-                    cc2.enabled = false;
-                }
-                Debug.Log("Enemy trigger collision");
-
-                break;
             case "ExitDoor":
                 rb.velocity = new Vector2(0, 0);
                 collisionObj = collision.gameObject;
@@ -290,6 +277,9 @@ public class Player : MonoBehaviour
 
     void NextLevel()
     {
+        PlayerPrefs.SetInt("Diamond", Diamond);
+        PlayerPrefs.SetString("Level", collisionObj.GetComponent<ChangeLevel>().nextLevel);
+        PlayerPrefs.Save();
         SceneManager.LoadScene(collisionObj.GetComponent<ChangeLevel>().nextLevel);
     }
 
