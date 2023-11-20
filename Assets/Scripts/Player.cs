@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,19 +11,53 @@ public class Player : MonoBehaviour
     public float movementSpeed = 0.5f;
     public float jumpPower = 10f;
 
+    public GameObject liveBar;
+    public TMP_Text diamondText;
+
     private float lateralMovement = 0;
     private bool isJumping = false;
     private bool canJump = true;
+    private bool firing = false;
     private bool isFiring = false;
     private bool canFire = true;
+    private bool cantMove = false;
+    private bool dead = false;
 
     //References
     Rigidbody2D rb;
     SpriteRenderer spriteRenderer;
     Animator animator;
     AudioSource audioSource;
+    GameObject collisionObj;
 
+    private int hearts = 3;
+    public int Heart
+    {
+        get { return hearts; }
+        set 
+        { 
+            hearts = value;
+            SpriteRenderer heart = liveBar.transform.GetChild(value).GetComponent<SpriteRenderer>();
+            heart.color = Color.clear;
+            if (value == 0)
+            {
+                animator.SetTrigger("Die");
+                dead = true;
+                Invoke("Die", 2);
+            }
+        }
+    }
 
+    private int diamonds = 0;
+    public int Diamond
+    {
+        get { return diamonds; }
+        set 
+        { 
+            diamonds = value;
+            diamondText.text = $"{diamonds}";
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +68,8 @@ public class Player : MonoBehaviour
         animator = rb.GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
 
+        Diamond = PlayerPrefs.GetInt("Diamond", 0);
+
     }
 
     // Update is called once per frame
@@ -42,6 +79,11 @@ public class Player : MonoBehaviour
         if (Input.GetAxis("Cancel") == 1)
         {
             SceneManager.LoadScene("Menu");
+        }
+
+        if (dead || cantMove)
+        {
+            return;
         }
 
         //Get firing input
@@ -62,8 +104,6 @@ public class Player : MonoBehaviour
         //Flip the sprite based on direction of movement
         if (rb.velocity.x > 0)
         {
-        
-            
             transform.localScale = new Vector3(1,1,1);
         }
         else if (rb.velocity.x < 0)
@@ -97,9 +137,31 @@ public class Player : MonoBehaviour
         if (isFiring && canFire)
         {
             canFire = false;
+            firing = true;
+            cantMove = true;
+            Invoke("canMove", 0.3f);
+            Invoke("stopFiring", 0.5f);
             animator.SetTrigger("Fire");
 
             Invoke("allowFire", 0.75f);
+        }
+        
+        if (firing)
+        {
+            Vector3 swingPosition = transform.GetChild(1).position;
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(swingPosition, 0.4f);
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                if (colliders[i].gameObject.tag != "Enemy")
+                    continue; //Move to next loop iteration
+                collisionObj = colliders[i].gameObject;
+                Animator an1 = collisionObj.gameObject.GetComponent<Animator>();
+                an1.SetTrigger("Die");
+                CapsuleCollider2D cc = collisionObj.gameObject.GetComponent<CapsuleCollider2D>();
+                cc.enabled = false;
+                Invoke("Delete", 2);
+                break;  //Stop loop after hit
+            }
         }
 
         //Track if we are moving or not in order to update the animation
@@ -123,7 +185,6 @@ public class Player : MonoBehaviour
 
     }
 
-
     private void allowJump()
     {
         canJump = true;
@@ -132,28 +193,109 @@ public class Player : MonoBehaviour
     {
         canFire = true;
     }
+    private void stopFiring()
+    {
+        firing = false;
+    }
+    private void canMove()
+    {
+        cantMove = false;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        //Switch statement depending on tag of object touched
+        switch (collision.gameObject.tag)
+        {
+            case "Enemy":
+                if(Heart == 0 || cantMove)
+                {
+                    return;
+                }
+                cantMove = true;
+                Invoke("canMove", 0.5f);
+                Heart--;
+                Animator an2 = collision.gameObject.GetComponent<Animator>();
+                an2.SetTrigger("Attack");
+                Debug.Log("Enemy collision");
+                animator.SetTrigger("Hit");
+                rb.velocity = new Vector2(0, 0);
+
+                break;
+            default:
+                break;
+        }
+    }
+
+    void Delete()
+    {
+        Destroy(collisionObj.gameObject);
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        collisionObj = collision.gameObject;
         //Switch statement depending on tag of object touched
         switch (collision.gameObject.tag)
         {
             case "Powerup":
                 Debug.Log("Powerup collision");
-            
+                Diamond++;
+                Invoke("Delete", 1);
+                //Play particle system
+                ParticleSystem ps = collision.gameObject.GetComponent<ParticleSystem>();
+                ps.Play();
+                Animator an = collision.gameObject.GetComponent<Animator>();
+                an.SetTrigger("Hit");
+                //Clear sprite
+                SpriteRenderer sr = collision.gameObject.GetComponent<SpriteRenderer>();
+                sr.color = Color.clear;
+                //Disable collider
+                CircleCollider2D cc = collision.gameObject.GetComponent<CircleCollider2D>();
+                cc.enabled = false;
+                //Play audio
+                AudioSource collisionAudio = collision.gameObject.GetComponent<AudioSource>();
+                collisionAudio.Play();
                 break;
+
             case "Enemy":
-                Debug.Log("Enemy collision");
+                if (firing)
+                {
+                    Invoke("Delete", 2);
+                    Animator an2 = collision.gameObject.GetComponent<Animator>();
+                    an2.SetTrigger("Hit");
+                    CircleCollider2D cc2 = collision.gameObject.GetComponent<CircleCollider2D>();
+                    cc2.enabled = false;
+                }
+                Debug.Log("Enemy trigger collision");
+
+                break;
+            case "ExitDoor":
+                rb.velocity = new Vector2(0, 0);
+                collisionObj = collision.gameObject;
+                Invoke("NextLevel", 2);
+                cantMove = true;
+                animator.SetTrigger("Leave");
+                Animator an3 = collision.gameObject.GetComponent<Animator>();
+                an3.SetTrigger("Open");
 
                 break;
             default:
                 break;
         }
 
-        void Die()
-        {
-            Destroy(collision.gameObject);
-            Debug.Log("object destroyed");
-        }
+        
+
+    }
+
+    void NextLevel()
+    {
+        SceneManager.LoadScene(collisionObj.GetComponent<ChangeLevel>().nextLevel);
+    }
+
+    //Player dies
+    void Die()
+    {
+        SceneManager.LoadScene("Menu");
     }
 }

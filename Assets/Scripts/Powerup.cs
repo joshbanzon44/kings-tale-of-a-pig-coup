@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class Powerup : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        
+        //Switch statement depending on tag of object touched
+        switch (collision.gameObject.tag)
+        {
+            case "Player":
+                
+
+                break;
+            
+            default:
+                break;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

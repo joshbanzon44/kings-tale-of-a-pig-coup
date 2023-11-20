@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: DoorOpen
+  m_Name: PigDeadLong
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,9 +21,9 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: -1164164934, guid: 1af64372c29e64048ab90f605dc23e68, type: 3}
+      value: {fileID: 1113725288, guid: 4fb2d9877826af24f8fd915f50fe83ba, type: 3}
     - time: 0.083333336
-      value: {fileID: 21300000, guid: 081c57aad15cbc6469fe77e7eecde3ed, type: 2}
+      value: {fileID: 21300000, guid: 383b441bef4540c4b9a1752729862e83, type: 2}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -46,8 +46,8 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: -1164164934, guid: 1af64372c29e64048ab90f605dc23e68, type: 3}
-    - {fileID: 21300000, guid: 081c57aad15cbc6469fe77e7eecde3ed, type: 2}
+    - {fileID: 1113725288, guid: 4fb2d9877826af24f8fd915f50fe83ba, type: 3}
+    - {fileID: 21300000, guid: 383b441bef4540c4b9a1752729862e83, type: 2}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
