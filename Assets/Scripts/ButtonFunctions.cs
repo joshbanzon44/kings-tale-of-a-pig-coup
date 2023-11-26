@@ -26,8 +26,7 @@ Application.Quit();
     //Function to continue game
     public void Continue()
     {
-        string currentLevel = PlayerPrefs.GetString("Level", "Level1");
-        SceneManager.LoadScene(currentLevel);
+        SceneManager.LoadScene("LevelSelect");
     }
 
     //Function to change scene to the instructions
@@ -47,4 +46,20 @@ Application.Quit();
     {
         SceneManager.LoadScene("Menu");
     }
+
+    public void Select(string s)
+    {
+        SceneManager.LoadScene(s);
+    }
+
+    public void Pause()
+    {
+        StartCoroutine(FadeToWhite());
+    }
+
+    IEnumerator FadeToWhite()
+    {
+        return null;
+    }
+
 }
