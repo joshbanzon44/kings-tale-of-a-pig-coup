@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour
 {
     public float movementSpeed = 0.5f;
-    public float jumpPower = 10f;
+    public float jumpPower = 150f;
 
     public GameObject liveBar;
     public TMP_Text diamondText;
@@ -69,6 +69,7 @@ public class Player : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
 
         Diamond = PlayerPrefs.GetInt("Diamond", 0);
+        jumpPower = 150 + Diamond*10;
 
     }
 
@@ -256,6 +257,7 @@ public class Player : MonoBehaviour
                 //Play audio
                 AudioSource collisionAudio = collision.gameObject.GetComponent<AudioSource>();
                 collisionAudio.Play();
+                jumpPower = 150 + Diamond*10;
                 break;
             case "ExitDoor":
                 rb.velocity = new Vector2(0, 0);
