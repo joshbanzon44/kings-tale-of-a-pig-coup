@@ -29,6 +29,7 @@ public class Player : MonoBehaviour
     Animator animator;
     AudioSource audioSource;
     GameObject collisionObj;
+    GameObject doorObj;
 
     private int hearts = 3;
     public int Heart
@@ -82,11 +83,6 @@ public class Player : MonoBehaviour
             SceneManager.LoadScene("Menu");
         }
 
-        if (dead || cantMove)
-        {
-            return;
-        }
-
         //Get firing input
         isFiring = Input.GetAxis("Fire1") > 0 ? true : false;
 
@@ -99,6 +95,12 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (dead || cantMove)
+        {
+            rb.velocity = Vector3.zero;
+            return;
+        }
+
         //Update location based on input
         rb.velocity = new Vector2(lateralMovement * movementSpeed * Time.fixedDeltaTime, rb.velocity.y);
 
@@ -139,7 +141,6 @@ public class Player : MonoBehaviour
         {
             canFire = false;
             firing = true;
-            cantMove = true;
             Invoke("canMove", 0.3f);
             Invoke("stopFiring", 0.5f);
             animator.SetTrigger("Fire");
@@ -150,7 +151,7 @@ public class Player : MonoBehaviour
         if (firing)
         {
             Vector3 swingPosition = transform.GetChild(0).transform.GetChild(1).position;
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(swingPosition, 0.4f);
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(swingPosition, 0.1f);
             for (int i = 0; i < colliders.Length; i++)
             {
                 if (colliders[i].gameObject.tag != "Enemy")
@@ -175,7 +176,7 @@ public class Player : MonoBehaviour
             animator.SetBool("isMoving", false);
         }
 
-        if (rb.velocity.magnitude > 0.0001f && rb.velocity.y > 0.0001f)
+        if (rb.velocity.magnitude > 0.001f && rb.velocity.y > 0.001f)
         {
             animator.SetBool("isJumping", true);
         }
@@ -235,7 +236,6 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        collisionObj = collision.gameObject;
         //Switch statement depending on tag of object touched
         switch (collision.gameObject.tag)
         {
@@ -260,12 +260,12 @@ public class Player : MonoBehaviour
                 jumpPower = 150 + Diamond*10;
                 break;
             case "ExitDoor":
-                rb.velocity = new Vector2(0, 0);
-                collisionObj = collision.gameObject;
+                rb.velocity = Vector3.zero;
+                doorObj = collision.gameObject;
                 Invoke("NextLevel", 2);
                 cantMove = true;
                 animator.SetTrigger("Leave");
-                Animator an3 = collision.gameObject.GetComponent<Animator>();
+                Animator an3 = doorObj.GetComponent<Animator>();
                 an3.SetTrigger("Open");
 
                 break;
@@ -280,9 +280,9 @@ public class Player : MonoBehaviour
     void NextLevel()
     {
         PlayerPrefs.SetInt("Diamond", Diamond);
-        PlayerPrefs.SetString("Level", collisionObj.GetComponent<ChangeLevel>().nextLevel);
+        PlayerPrefs.SetString("Level", doorObj.GetComponent<ChangeLevel>().nextLevel);
         PlayerPrefs.Save();
-        SceneManager.LoadScene(collisionObj.GetComponent<ChangeLevel>().nextLevel);
+        SceneManager.LoadScene(doorObj.GetComponent<ChangeLevel>().nextLevel);
     }
 
     //Player dies
