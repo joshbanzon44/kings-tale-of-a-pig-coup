@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class ButtonFunctions : MonoBehaviour
 {
+    
+
     //Function to quit game on button click
     public void Quit()
     {
@@ -50,16 +52,6 @@ Application.Quit();
     public void Select(string s)
     {
         SceneManager.LoadScene(s);
-    }
-
-    public void Pause()
-    {
-        StartCoroutine(FadeToWhite());
-    }
-
-    IEnumerator FadeToWhite()
-    {
-        return null;
     }
 
 }

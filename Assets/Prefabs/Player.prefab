@@ -52,6 +52,8 @@ MonoBehaviour:
   jumpPower: 150
   liveBar: {fileID: 0}
   diamondText: {fileID: 0}
+  whiteScreen: {fileID: 5113359121597996257, guid: 1e0f2b4108d4b9740926e56ae6682a2f, type: 3}
+  deadText: {fileID: 8534976833945848602, guid: 84218d896901f8f4aaf3a69459ae13e5, type: 3}
 --- !u!82 &7319580575776857855
 AudioSource:
   m_ObjectHideFlags: 0

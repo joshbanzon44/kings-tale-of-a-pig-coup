@@ -3379,6 +3379,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1319447540}
     - target: {fileID: 8636795054180044227, guid: 8672a7deb10347f40aec8291d328ccdc, type: 3}
+      propertyPath: deadText
+      value: 
+      objectReference: {fileID: 1319447541}
+    - target: {fileID: 8636795054180044227, guid: 8672a7deb10347f40aec8291d328ccdc, type: 3}
       propertyPath: diamondText
       value: 
       objectReference: {fileID: 1319447541}

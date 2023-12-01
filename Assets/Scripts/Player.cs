@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using TMPro.EditorUtilities;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,6 +14,8 @@ public class Player : MonoBehaviour
 
     public GameObject liveBar;
     public TMP_Text diamondText;
+    public GameObject whiteScreen;
+    public TMP_Text deadText;
 
     private float lateralMovement = 0;
     private bool isJumping = false;
@@ -44,7 +47,9 @@ public class Player : MonoBehaviour
             {
                 animator.SetTrigger("Die");
                 dead = true;
-                Invoke("Die", 2);
+                liveBar.SetActive(false);
+                Coroutine c = StartCoroutine(FadeToWhite());
+                Invoke("Die", 4);
             }
         }
     }
@@ -71,7 +76,14 @@ public class Player : MonoBehaviour
 
         Diamond = PlayerPrefs.GetInt("Diamond", 0);
         jumpPower = 150 + Diamond*10;
+        Color color = whiteScreen.GetComponent<SpriteRenderer>().color;
+        color.a = 0;
+        whiteScreen.GetComponent<SpriteRenderer>().color = color;
+        color = deadText.color;
+        color.a = 0;
+        deadText.color = color;
 
+        liveBar.SetActive(true);
     }
 
     // Update is called once per frame
@@ -161,7 +173,7 @@ public class Player : MonoBehaviour
                 an1.SetTrigger("Die");
                 CapsuleCollider2D cc = collisionObj.gameObject.GetComponent<CapsuleCollider2D>();
                 cc.enabled = false;
-                Invoke("Delete", 2);
+                Invoke("Delete", 1);
                 break;  //Stop loop after hit
             }
         }
@@ -280,6 +292,7 @@ public class Player : MonoBehaviour
     void NextLevel()
     {
         PlayerPrefs.SetInt("Diamond", Diamond);
+        PlayerPrefs.SetInt("LevelNum", doorObj.GetComponent<ChangeLevel>().nextLevelNum);
         PlayerPrefs.SetString("Level", doorObj.GetComponent<ChangeLevel>().nextLevel);
         PlayerPrefs.Save();
         SceneManager.LoadScene(doorObj.GetComponent<ChangeLevel>().nextLevel);
@@ -289,5 +302,25 @@ public class Player : MonoBehaviour
     void Die()
     {
         SceneManager.LoadScene("Menu");
+    }
+
+    //Coroutine to slowly turn screen white when player dies
+    IEnumerator FadeToWhite()
+    {
+        SpriteRenderer screenRenderer = whiteScreen.GetComponent<SpriteRenderer>();
+        
+        Color c = screenRenderer.color;
+        Color c2 = new Color (1, 0, 0, 0);
+
+        float opacity = 0f;
+        for (opacity = 0f; opacity <= 1; opacity += 0.01f)
+        {
+            c.a = opacity;
+            c2.a = opacity;
+            screenRenderer.color = c;
+            deadText.color = c2;
+           
+            yield return null;            
+        }
     }
 }
