@@ -255,6 +255,10 @@ PrefabInstance:
       propertyPath: diamondText
       value: 
       objectReference: {fileID: 2120294317}
+    - target: {fileID: 8636795054180044227, guid: 8672a7deb10347f40aec8291d328ccdc, type: 3}
+      propertyPath: whiteScreen
+      value: 
+      objectReference: {fileID: 308825693}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5419,6 +5423,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 153899857699185833, guid: 573dee80bb772b94d96d9c5d6fab953a, type: 3}
   m_PrefabInstance: {fileID: 228681179}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &308825693 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5113359121597996257, guid: 1e0f2b4108d4b9740926e56ae6682a2f, type: 3}
+  m_PrefabInstance: {fileID: 4009707796634177938}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &368909171
 PrefabInstance:

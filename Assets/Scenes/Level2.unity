@@ -5417,6 +5417,10 @@ PrefabInstance:
       propertyPath: diamondText
       value: 
       objectReference: {fileID: 1529637723}
+    - target: {fileID: 8636795054180044227, guid: 8672a7deb10347f40aec8291d328ccdc, type: 3}
+      propertyPath: whiteScreen
+      value: 
+      objectReference: {fileID: 1388613506}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5781,6 +5785,11 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1388613506 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5113359121597996257, guid: 1e0f2b4108d4b9740926e56ae6682a2f, type: 3}
+  m_PrefabInstance: {fileID: 1961652890}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1511597917
 GameObject:
   m_ObjectHideFlags: 0
